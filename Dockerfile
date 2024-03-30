@@ -1,22 +1,17 @@
-# Fetching the minified node image on apline linux
-FROM node:slim
+# 
+FROM python:3.9
 
-# Declaring env
-ENV NODE_ENV development
+# 
+WORKDIR /code
 
-# Setting up the work directory
-WORKDIR /express-docker
+# 
+COPY ./requirements.txt /code/requirements.txt
 
-# Copying all the files in our project
-COPY . .
+# 
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-# Installing dependencies
-RUN npm init -y
+# 
+COPY ./app /code/app
 
-RUN npm install express
-
-# Starting our application
-CMD [ "node", "index.js" ]
-
-# Exposing server port
-EXPOSE 5000
+# 
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]
